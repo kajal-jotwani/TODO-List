@@ -45,6 +45,45 @@ router.post("/", async (req, res) => {
   }
 });
 
+router.put("/:id", async (req, res) => {
+  const Schema = Joi.object({
+    name: Joi.string().min(3).max(300).required(),
+    author: Joi.string().min(3).max(30),
+    uid: Joi.string(),
+    isComplete: Joi.boolean(),
+    date: Joi.date(),
+  });
+
+  const { error } = Schema.validate(req.body);
+
+  if (error) return res.status(400).send(error.details[0].message);
+
+  const todo = await Todo.findById(req.params.id);
+
+  if (!todo) return res.status(404).send("Todo not found...");
+
+  const { name, author, isComplete, date, uid } = req.body;
+
+  try {
+    const updatedTodo = await Todo.findByIdAndUpdate(
+      req.params.id,
+      {
+        name,
+        author,
+        isComplete,
+        date,
+        uid,
+      },
+      { new: true }
+    );
+
+    res.send(updatedTodo);
+  } catch (error) {
+    res.status(500).send(error.message);
+    console.log(error.message);
+  }
+});
+
 router.delete("/:id", async (req, res) => {
   try {
     const todo = await Todo.deleteOne(req.params.id);
