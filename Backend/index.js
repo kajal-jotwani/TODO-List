@@ -1,6 +1,8 @@
 const todos = require("./routes/todos.js")
 const express = require("express")
 const mongoose = require("mongoose")
+const signup = require("./routes/signup")
+const signIn = require("./routes/signIn")
 const cors = require("cors")
 
 
@@ -12,6 +14,8 @@ app.use(cors())
 app.use(express.json())
 
 app.use("/api/todos", todos)
+app.use("/api/signup", signup)
+app.use("/api/signin", signIn)
 
 console.log(process.env.MONGO_URI);  // Check if MONGO_URI is correctly loaded
 
